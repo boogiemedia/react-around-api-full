@@ -1,0 +1,9 @@
+.auth-form__footer-title_link {
+ text-decoration: none;
+ margin-left: 5px;
+ transition: 0.3s;
+  cursor: pointer;
+}
+.auth-form__footer-title_link:hover{
+    opacity: 0.6;
+}

@@ -1,0 +1,11 @@
+.header__side-bar_type_mobile {
+  display: flex;
+  font-family: 'Inter', Arial, sans-serif;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 24px;
+  margin: 40px auto;
+  border-width: 0 0 1px 0;
+  border-color: white;
+}

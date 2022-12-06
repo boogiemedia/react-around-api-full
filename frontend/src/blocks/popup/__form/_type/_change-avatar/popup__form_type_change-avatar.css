@@ -1,0 +1,12 @@
+.popup__form_type_change-avatar{
+    min-height: 272px;
+}
+
+
+@media screen and (max-width: 760px) {
+    .popup__form_type_change-avatar{
+        width: 282px;
+        min-height: 272px;
+    }
+    
+  }

@@ -1,0 +1,21 @@
+.elements__block {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 282px;
+  height: 361px;
+  background: #ffffff;
+  border-radius: 10px;
+  font-family: "Inter", Arial, sans-serif;
+  transition: 0.3s;
+}
+.elements__block:hover {
+  transform: scale(1.05);
+  
+}
+@media screen and (max-width: 760px) {
+  .elements__block:hover {
+    transform: scale(1);
+    
+  }
+}

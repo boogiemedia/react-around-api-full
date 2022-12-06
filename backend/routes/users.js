@@ -1,6 +1,8 @@
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+require('dotenv').config();
 const {
   OK,
   ADD,
@@ -12,10 +14,15 @@ const {
 } = require('../constants/statusHandler');
 
 const login = (req, res) => {
+  const { NODE_ENV, JWT_SECRET } = process.env;
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user);
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'
+      );
+      res.status(OK).send(token);
     })
     .catch((err) => {
       if (err.status === INVALID_DATA) {

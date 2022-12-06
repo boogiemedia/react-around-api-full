@@ -1,0 +1,17 @@
+.header__side-bar__link {
+  color: #a9a9a9;
+  transition: 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.header__side-bar__link:hover {
+  color: white;
+}
+
+
+@media screen and (max-width: 920px) {
+  .header__side-bar__link {
+    margin-right: 30px;
+  }
+}
