@@ -12,7 +12,9 @@ const {
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(OK).send(cards))
-    .catch(() => res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE }));
+    .catch(() =>
+      res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
+    );
 };
 const createNewCard = (req, res) => {
   const { name, link } = req.body;
@@ -54,7 +56,7 @@ const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },
+    { new: true }
   )
     .orFail(() => {
       const error = new Error('user id not found');
@@ -78,12 +80,13 @@ const unlikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true },
-  ).orFail(() => {
-    const error = new Error('User not exist');
-    error.status = NOT_FOUND;
-    throw error;
-  })
+    { new: true }
+  )
+    .orFail(() => {
+      const error = new Error('User not exist');
+      error.status = NOT_FOUND;
+      throw error;
+    })
     .then(() => {
       res.status(OK).send({ message: 'card disliked' });
     })

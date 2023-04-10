@@ -14,15 +14,11 @@ const {
 } = require('../constants/statusHandler');
 
 const login = (req, res) => {
-  const { NODE_ENV, JWT_SECRET } = process.env;
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'
-      );
-      res.status(OK).send(token);
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+      res.status(OK).send({ token });
     })
     .catch((err) => {
       if (err.status === INVALID_DATA) {
@@ -30,7 +26,29 @@ const login = (req, res) => {
       }
     });
 };
-
+const signup = (req, res) => {
+  const { email, password } = req.body;
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({ email, password: hash })
+      .then((newUser) => {
+        const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET);
+        res.status(ADD).send({ token });
+      })
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res
+            .status(INVALID_DATA)
+            .send({ message: 'one ore more fields not correct' });
+        } else if (err.name === 'MongoServerError' && err.code === 11000) {
+          return res
+            .status(USER_ALREDY_EXIST)
+            .send({ message: 'User already exist!' });
+        } else {
+          res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE, err });
+        }
+      });
+  });
+};
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(OK).send(users))
@@ -61,26 +79,26 @@ const getProfile = (req, res) => {
       }
     });
 };
-const createUsers = (req, res) => {
-  const { password, email } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({ password: hash, email: email })
-      .then((newUser) => res.status(ADD).send(newUser))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res
-            .status(INVALID_DATA)
-            .send({ message: 'one ore more fields not correct' });
-        } else if (err.name === 'MongoServerError' && err.code === 11000) {
-          return res
-            .status(USER_ALREDY_EXIST)
-            .send({ message: 'User already exist!' });
-        } else {
-          res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE, err });
-        }
-      });
-  });
-};
+// const createUsers = (req, res) => {
+//   const { password, email } = req.body;
+//   bcrypt.hash(password, 10).then((hash) => {
+//     User.create({ password: hash, email: email })
+//       .then((newUser) => res.status(ADD).send(newUser))
+//       .catch((err) => {
+//         if (err.name === 'ValidationError') {
+//           res
+//             .status(INVALID_DATA)
+//             .send({ message: 'one ore more fields not correct' });
+//         } else if (err.name === 'MongoServerError' && err.code === 11000) {
+//           return res
+//             .status(USER_ALREDY_EXIST)
+//             .send({ message: 'User already exist!' });
+//         } else {
+//           res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE, err });
+//         }
+//       });
+//   });
+// };
 const updateUser = (req, res) => {
   const { name, about } = req.body;
   const me = { _id: req.user._id };
@@ -135,7 +153,7 @@ const updateUserAvatar = (req, res) => {
 router.post('/signin', login);
 router.get('/users', getUsers);
 router.get('/users/:userId', getProfile);
-router.post('/users', createUsers);
+router.post('/signup', signup);
 router.patch('/users/me', updateUser);
 router.patch('/users/me/avatar', updateUserAvatar);
 
