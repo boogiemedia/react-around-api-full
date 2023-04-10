@@ -36,16 +36,18 @@ const signup = (req, res) => {
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          res
+          return res
             .status(INVALID_DATA)
             .send({ message: 'one ore more fields not correct' });
-        } else if (err.name === 'MongoServerError' && err.code === 11000) {
+        }
+        if (err.name === 'MongoServerError' && err.code === 11000) {
           return res
             .status(USER_ALREDY_EXIST)
             .send({ message: 'User already exist!' });
-        } else {
-          res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE, err });
         }
+        return res
+          .status(SERVER_ERROR)
+          .send({ message: SERVER_ERROR_MESSAGE, err });
       });
   });
 };
