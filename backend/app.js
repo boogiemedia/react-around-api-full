@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cors = require('cors');
 // const auth = require('./middleware/auth');
 
 const app = express();
@@ -12,6 +13,7 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 //  .............end of router........................
 app.use(helmet());
+app.use(cors());
 app.use(express.json());
 app.use('/', usersRouter);
 
