@@ -14,6 +14,7 @@ const {
 } = require('../constants/statusHandler');
 
 const login = (req, res) => {
+  console.log(req.body);
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -26,31 +27,7 @@ const login = (req, res) => {
       }
     });
 };
-const signup = (req, res) => {
-  const { email, password } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({ email, password: hash })
-      .then((newUser) => {
-        const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET);
-        res.status(ADD).send({ token });
-      })
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          return res
-            .status(INVALID_DATA)
-            .send({ message: 'one ore more fields not correct' });
-        }
-        if (err.name === 'MongoServerError' && err.code === 11000) {
-          return res
-            .status(USER_ALREDY_EXIST)
-            .send({ message: 'User already exist!' });
-        }
-        return res
-          .status(SERVER_ERROR)
-          .send({ message: SERVER_ERROR_MESSAGE, err });
-      });
-  });
-};
+
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(OK).send(users))
@@ -81,26 +58,35 @@ const getProfile = (req, res) => {
       }
     });
 };
-// const createUsers = (req, res) => {
-//   const { password, email } = req.body;
-//   bcrypt.hash(password, 10).then((hash) => {
-//     User.create({ password: hash, email: email })
-//       .then((newUser) => res.status(ADD).send(newUser))
-//       .catch((err) => {
-//         if (err.name === 'ValidationError') {
-//           res
-//             .status(INVALID_DATA)
-//             .send({ message: 'one ore more fields not correct' });
-//         } else if (err.name === 'MongoServerError' && err.code === 11000) {
-//           return res
-//             .status(USER_ALREDY_EXIST)
-//             .send({ message: 'User already exist!' });
-//         } else {
-//           res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE, err });
-//         }
-//       });
-//   });
-// };
+const createUsers = (req, res) => {
+  const salt = bcrypt.genSaltSync(10);
+  const { password, email } = req.body;
+  bcrypt
+    .hash(password, salt)
+    .then((hash) => {
+      User.create({ password: hash, email: email })
+        .then((newUser) => res.status(ADD).send(newUser))
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            res
+              .status(INVALID_DATA)
+              .send({ message: 'one ore more fields not correct' });
+          } else if (err.name === 'MongoServerError' && err.code === 11000) {
+            return res
+              .status(USER_ALREDY_EXIST)
+              .send({ message: 'User already exist!' });
+          } else {
+            res
+              .status(SERVER_ERROR)
+              .send({ message: SERVER_ERROR_MESSAGE, err });
+          }
+        });
+    })
+    .catch((err) => {
+      res.status(INVALID_DATA).send({ message: 'wrong data type' });
+    });
+};
+
 const updateUser = (req, res) => {
   const { name, about } = req.body;
   const me = { _id: req.user._id };
@@ -155,7 +141,7 @@ const updateUserAvatar = (req, res) => {
 router.post('/signin', login);
 router.get('/users', getUsers);
 router.get('/users/:userId', getProfile);
-router.post('/signup', signup);
+router.post('/signup', createUsers);
 router.patch('/users/me', updateUser);
 router.patch('/users/me/avatar', updateUserAvatar);
 

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "body-parser": "^1.20.2",
     "validator": "^13.9.0"
   }
 }

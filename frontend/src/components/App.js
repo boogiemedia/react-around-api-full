@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import '../index.css';
-import Header from './Header';
-import Main from './Main';
-import Login from './Login';
-import Footer from './Footer';
-import ImagePopup from './ImagePopup';
-import api from '../utils/api';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import EditProfilePopup from './EditProfilePopup';
-import EditAvatarPopup from './EditAvatarPopup';
-import EditPlacePopup from './AddPlacePopup';
-import ProtectedRoute from './ProtectedRoute';
-import InfoToolTip from './infoToolTip';
-import Signup from './Signup';
-import { register, authorize, checkToken } from '../utils/auth';
+import React, { useState, useEffect } from "react";
+import "../index.css";
+import Header from "./Header";
+import Main from "./Main";
+import Login from "./Login";
+import Footer from "./Footer";
+import ImagePopup from "./ImagePopup";
+import api from "../utils/api";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import EditPlacePopup from "./AddPlacePopup";
+import ProtectedRoute from "./ProtectedRoute";
+import InfoToolTip from "./infoToolTip";
+import Signup from "./Signup";
+import { register, authorize, checkToken } from "../utils/auth";
 // .......End of imports.............................. ...........................................................................
 
 function App() {
@@ -26,10 +26,10 @@ function App() {
   const [currentUser, setCurentUser] = useState({});
   const [activeCard, setActiveCard] = useState({});
   const [isInfoToolTipOpen, setInfoToolTipOPen] = useState(false);
-  const [infoToolTipIcon, setInfoToolTipIcon] = useState('');
-  const [infoToolTipText, setInfoToolTipText] = useState('');
+  const [infoToolTipIcon, setInfoToolTipIcon] = useState("");
+  const [infoToolTipText, setInfoToolTipText] = useState("");
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState("");
   const navigate = useNavigate();
 
   //.........end of states.......................................................................
@@ -38,16 +38,16 @@ function App() {
     checkToken(localStorage.jwt)
       .then((res) => {
         if (localStorage.jwt) {
-          if (res.data.email) {
+          if (res.email) {
             setLoggedIn(true);
-            setUser(res.data.email);
+            setUser(res.email);
           } else {
             setLoggedIn(false);
           }
         }
       })
       .catch((res) => {
-        console.log('something went wrong with token', res);
+        console.log("something went wrong with token", res);
       });
   }
 
@@ -60,14 +60,14 @@ function App() {
         setCurentUser(profile);
       })
       .catch((profile) =>
-        console.log('there is error in profile api', profile)
+        console.log("there is error in profile api", profile),
       );
     api
       .getInitialCards()
       .then((cards) => {
         setCards(cards);
       })
-      .catch((cards) => console.log('there is error in cards api', cards));
+      .catch((cards) => console.log("there is error in cards api", cards));
   }
 
   useEffect(() => {
@@ -80,37 +80,38 @@ function App() {
   function signup(email, password) {
     register(email, password)
       .then((res) => {
-        if (!res.data._id) {
+        console.log(res);
+        if (!res._id) {
           console.log(res);
-          setInfoToolTipIcon('error');
-          setInfoToolTipText('Ooops,something went wrong! please try again.');
+          setInfoToolTipIcon("error");
+          setInfoToolTipText("Ooops,something went wrong! please try again.");
           setInfoToolTipOPen(true);
         } else {
-          setInfoToolTipIcon('succes');
-          setInfoToolTipText('Succees! You have now been registred.');
+          setInfoToolTipIcon("succes");
+          setInfoToolTipText("Succees! You have now been registred.");
           setInfoToolTipOPen(true);
-          navigate('/login');
+          navigate("/login");
         }
       })
       .catch((res) => {
         console.log(res);
-        setInfoToolTipIcon('error');
-        setInfoToolTipText('Ooops,something went wrong! please try again.');
+        setInfoToolTipIcon("error");
+        setInfoToolTipText("Ooops,something went wrong! please try again.");
         setInfoToolTipOPen(true);
       });
   }
   function login(email, password) {
     authorize(email, password)
       .then((data) => {
-        localStorage.setItem('jwt', data.token);
+        localStorage.setItem("jwt", data.token);
         if (data.token) {
           setLoggedIn(true);
         }
       })
       .catch((res) => {
         console.log(res);
-        setInfoToolTipIcon('error');
-        setInfoToolTipText('Ooops,something went wrong! please try again.');
+        setInfoToolTipIcon("error");
+        setInfoToolTipText("Ooops,something went wrong! please try again.");
         setInfoToolTipOPen(true);
       });
   }
@@ -133,7 +134,7 @@ function App() {
         setCurentUser(res);
         handleCloseButtonClick();
       })
-      .catch((res) => console.log('there is a problem in update user', res));
+      .catch((res) => console.log("there is a problem in update user", res));
   }
   function handleUpdateAvatar(avatar) {
     api
@@ -143,7 +144,7 @@ function App() {
         handleCloseButtonClick();
       })
       .catch((res) =>
-        console.log('there is a problem in change avatar user', res)
+        console.log("there is a problem in change avatar user", res),
       );
   }
 
@@ -155,22 +156,22 @@ function App() {
         .then((newCard) => {
           setCards((state) =>
             state.map((currentCard) =>
-              currentCard._id === card._id ? newCard : currentCard
-            )
+              currentCard._id === card._id ? newCard : currentCard,
+            ),
           );
         })
-        .catch((res) => console.log('there is a problem in like button', res));
+        .catch((res) => console.log("there is a problem in like button", res));
     } else {
       api
         .deleteLike(card._id, isLiked)
         .then((newCard) => {
           setCards((state) =>
             state.map((currentCard) =>
-              currentCard._id === card._id ? newCard : currentCard
-            )
+              currentCard._id === card._id ? newCard : currentCard,
+            ),
           );
         })
-        .catch((res) => console.log('there is a problem in like button', res));
+        .catch((res) => console.log("there is a problem in like button", res));
     }
   }
   function handleCardDelete(id) {
@@ -180,55 +181,55 @@ function App() {
       .then(() => {
         setCards((state) => state.filter((card) => card._id !== cardId));
       })
-      .catch((id) => console.log('there is error in deleting card', id));
+      .catch((id) => console.log("there is error in deleting card", id));
   }
   function handleAddPlaceSubmit(newCard) {
     api.addNewCard(newCard).then((newCard) => {
       setCards([newCard, ...cards]);
       handleCloseButtonClick().catch((res) =>
-        console.log('there is a problem in adding new cards', res)
+        console.log("there is a problem in adding new cards", res),
       );
     });
   }
   //................................End of Api calls..........................................
 
   return (
-    <div className='App'>
+    <div className="App">
       <CurrentUserContext.Provider value={currentUser}>
         <Routes>
           <Route
-            path='login'
-            element={<Header goTo='sign up' link='/signup' />}
+            path="login"
+            element={<Header goTo="sign up" link="/signup" />}
           />
           <Route
-            path='signup'
-            element={<Header goTo='log in' link='/login' />}
+            path="signup"
+            element={<Header goTo="log in" link="/login" />}
           />
           <Route
-            path='/'
-            element={<Header goTo='Log out' link='/login' email={user} />}
+            path="/"
+            element={<Header goTo="Log out" link="/login" email={user} />}
           />
         </Routes>
         <Routes>
           <Route
-            path='/login'
+            path="/login"
             element={
               <Login
-                title='Log in'
-                link='Sign up'
+                title="Log in"
+                link="Sign up"
                 onAutharization={login}
                 onLogin={isLoggedIn}
               />
             }
           />
           <Route
-            path='/signup'
+            path="/signup"
             element={<Signup onAutharization={signup} ok={infoToolTipIcon} />}
           />
 
           <Route element={<ProtectedRoute onLogin={isLoggedIn} />}>
             <Route
-              path='/'
+              path="/"
               element={
                 <Main
                   setActiveCard={setActiveCard}

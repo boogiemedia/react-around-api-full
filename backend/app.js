@@ -3,21 +3,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
-// const auth = require('./middleware/auth');
+const bodyParser = require('body-parser');
+const auth = require('./middleware/auth');
 
 const app = express();
-const { PORT = 3000 } = process.env;
+const { PORT = 3005 } = process.env;
 
 //  ..........end of defining server.....
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 //  .............end of router........................
 app.use(helmet());
+app.use(bodyParser.json());
+
 app.use(cors());
 app.use(express.json());
 app.use('/', usersRouter);
 
-// app.use(auth);
+app.use(auth);
 app.use('/', cardsRouter);
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
