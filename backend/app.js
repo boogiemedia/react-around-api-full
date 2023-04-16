@@ -12,6 +12,7 @@ const { PORT = 3005 } = process.env;
 //  ..........end of defining server.....
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+
 //  .............end of router........................
 app.use(helmet());
 app.use(bodyParser.json());
@@ -28,9 +29,7 @@ app.use((req, res) => {
 // tmp authorization
 
 mongoose.set('debug', true);
-mongoose
-  .connect('mongodb://127.0.0.1:27017/aroundb')
-  .then(() => console.warn('connected'));
+mongoose.connect('mongodb://127.0.0.1:27017/aroundb');
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`app runs at ${PORT}`);

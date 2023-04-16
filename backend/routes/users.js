@@ -14,7 +14,6 @@ const {
 } = require('../constants/statusHandler');
 
 const login = (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -64,7 +63,7 @@ const createUsers = (req, res) => {
   bcrypt
     .hash(password, salt)
     .then((hash) => {
-      User.create({ password: hash, email: email })
+      User.create({ password: hash, email })
         .then((newUser) => res.status(ADD).send(newUser))
         .catch((err) => {
           if (err.name === 'ValidationError') {
@@ -83,7 +82,7 @@ const createUsers = (req, res) => {
         });
     })
     .catch((err) => {
-      res.status(INVALID_DATA).send({ message: 'wrong data type' });
+      res.status(INVALID_DATA, err).send({ message: 'wrong data type' });
     });
 };
 
