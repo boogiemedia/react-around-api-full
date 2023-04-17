@@ -38,8 +38,8 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: (v) => REGEX_URL.test(v),
       message: 'use valid url',
-      default: 'https://pbs.twimg.com/media/E7OrdQCXsAAJARl.jpg',
     },
+    default: 'https://pbs.twimg.com/media/E7OrdQCXsAAJARl.jpg',
   },
 });
 

@@ -7,8 +7,8 @@ export default function EditProfilePopup(props) {
   const [name, setName] = useState({});
   const [description, setDescription] = useState({});
   useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
+    setName(currentUser ? currentUser.name : "jhon");
+    setDescription(currentUser ? currentUser.about : "explorer");
   }, [currentUser]);
 
   function handleSubmit(e) {
@@ -34,7 +34,7 @@ export default function EditProfilePopup(props) {
         required
         minLength="2"
         maxLength="40"
-        value={name || ''}
+        value={name || ""}
         onChange={(e) => setName(e.target.value)}
       />
       <span
@@ -48,7 +48,7 @@ export default function EditProfilePopup(props) {
         required
         minLength="2"
         maxLength="200"
-        value={description || ''}
+        value={description || ""}
         onChange={(e) => setDescription(e.target.value)}
       />
       <span

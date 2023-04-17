@@ -15,6 +15,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import InfoToolTip from "./infoToolTip";
 import Signup from "./Signup";
 import { register, authorize, checkToken } from "../utils/auth";
+import jwt_decode from "jwt-decode";
 // .......End of imports.............................. ...........................................................................
 
 function App() {
@@ -54,10 +55,12 @@ function App() {
   //................end of token check..........................
 
   function getApiData() {
+    const token = localStorage.jwt;
+    const decoded = jwt_decode(token);
     api
-      .getUserInfo()
+      .getUserInfo(decoded._id)
       .then((profile) => {
-        setCurentUser(profile);
+        setCurentUser(profile.data);
       })
       .catch((profile) =>
         console.log("there is error in profile api", profile),
@@ -82,7 +85,6 @@ function App() {
       .then((res) => {
         console.log(res);
         if (!res._id) {
-          console.log(res);
           setInfoToolTipIcon("error");
           setInfoToolTipText("Ooops,something went wrong! please try again.");
           setInfoToolTipOPen(true);
@@ -94,7 +96,6 @@ function App() {
         }
       })
       .catch((res) => {
-        console.log(res);
         setInfoToolTipIcon("error");
         setInfoToolTipText("Ooops,something went wrong! please try again.");
         setInfoToolTipOPen(true);
@@ -106,10 +107,10 @@ function App() {
         localStorage.setItem("jwt", data.token);
         if (data.token) {
           setLoggedIn(true);
+          getApiData();
         }
       })
       .catch((res) => {
-        console.log(res);
         setInfoToolTipIcon("error");
         setInfoToolTipText("Ooops,something went wrong! please try again.");
         setInfoToolTipOPen(true);
@@ -149,6 +150,7 @@ function App() {
   }
 
   function handleCardLike(card) {
+    console.log(currentUser);
     const isLiked = card.likes.some((user) => user._id === currentUser._id);
     if (!isLiked) {
       api

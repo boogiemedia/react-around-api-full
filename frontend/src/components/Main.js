@@ -1,6 +1,6 @@
-import React from 'react';
-import Card from './Card';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import React from "react";
+import Card from "./Card";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -16,44 +16,44 @@ export default function Main(props) {
   }
 
   return (
-    <main className='main'>
-      <section className='profile'>
-        <div className='profile__avatar-cover'>
+    <main className="main">
+      <section className="profile">
+        <div className="profile__avatar-cover">
           <div
-            id='change-profile-picture'
+            id="change-profile-picture"
             onClick={handleEditAvatarClick}
-            className='profile__avatar-middle'
+            className="profile__avatar-middle"
           ></div>
           <img
             src={currentUser.avatar}
-            id='profile-avatar'
-            alt='profile-avatar'
-            className='profile__avatar'
+            id="profile-avatar"
+            alt="profile-avatar"
+            className="profile__avatar"
           />
-          <div className='profile__avatar-button'></div>
+          <div className="profile__avatar-button"></div>
         </div>
 
-        <div className='profile__info-block'>
-          <h1 className='profile__info'>{currentUser.name}</h1>
+        <div className="profile__info-block">
+          <h1 className="profile__info">{currentUser.name}</h1>
           <button
-            id='profile-edditor'
+            id="profile-edditor"
             onClick={handleEditProfileClick}
-            type='button'
-            className='profile__edit-button'
-            aria-label='edit-button'
+            type="button"
+            className="profile__edit-button"
+            aria-label="edit-button"
           ></button>
-          <p className='profile__sub-info'>{currentUser.about}</p>
+          <p className="profile__sub-info">{currentUser.about}</p>
         </div>
 
         <button
-          id='card-editor'
+          id="card-editor"
           onClick={handleAddPlaceClick}
-          type='button'
-          className='profile__add-button'
-          aria-label='add-button'
+          type="button"
+          className="profile__add-button"
+          aria-label="add-button"
         ></button>
       </section>
-      <section className='elements'>
+      <section className="elements">
         {props.cards.map((data) => {
           return (
             <Card

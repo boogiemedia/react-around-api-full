@@ -12,6 +12,7 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
+    console.log('checkkkkk');
     payload = jwt.verify(
       token,
       NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
