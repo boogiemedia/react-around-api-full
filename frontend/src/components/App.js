@@ -47,6 +47,7 @@ function App() {
           }
         }
       })
+      .then(() => {})
       .catch((res) => {
         console.log("something went wrong with token", res);
       });
@@ -55,35 +56,38 @@ function App() {
   //................end of token check..........................
 
   function getApiData() {
-    const token = localStorage.jwt;
-    const decoded = jwt_decode(token);
-    api
-      .getUserInfo(decoded._id)
-      .then((profile) => {
-        setCurentUser(profile.data);
-      })
-      .catch((profile) =>
-        console.log("there is error in profile api", profile),
-      );
-    api
-      .getInitialCards()
-      .then((cards) => {
-        setCards(cards);
-      })
-      .catch((cards) => console.log("there is error in cards api", cards));
+    if (localStorage.jwt) {
+      const token = localStorage.jwt;
+      const decoded = jwt_decode(token);
+      api
+        .getUserInfo(decoded._id)
+        .then((profile) => {
+          setCurentUser(profile.data);
+        })
+        .catch((profile) =>
+          console.log("there is error in profile api", profile),
+        );
+      api
+        .getInitialCards()
+        .then((cards) => {
+          setCards(cards);
+        })
+        .catch((cards) => console.log("there is error in cards api", cards));
+    } else {
+      console.log("you need to login to get user data");
+    }
   }
 
   useEffect(() => {
-    getApiData();
     jwtCheck();
-  }, []);
+    getApiData();
+  }, [isLoggedIn]);
 
   //.................end of userinfo call......................................................
 
   function signup(email, password) {
     register(email, password)
       .then((res) => {
-        console.log(res);
         if (!res._id) {
           setInfoToolTipIcon("error");
           setInfoToolTipText("Ooops,something went wrong! please try again.");
