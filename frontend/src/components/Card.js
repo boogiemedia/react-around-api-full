@@ -8,13 +8,13 @@ export default function Card(props) {
 
   const isOwn = owner === currentUser._id;
   const isLiked = () => {
-    likes.some((like) => like === currentUser._id);
+    return likes.some((like) => like === currentUser._id);
   };
   const cardDeleteButtonClassName = ` ${
     isOwn ? "elements__trash" : "elements__trash elements__trash_hidden"
   }`;
   const cardLikeButtonClassName = `${
-    isLiked ? "elements__like elements__like_type_active" : "elements__like"
+    isLiked() ? "elements__like elements__like_type_active" : "elements__like"
   }`;
 
   function handleCardClick() {
