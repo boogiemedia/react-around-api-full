@@ -8,6 +8,7 @@ export default function Header(props) {
   function logOut() {
     if (props.goTo === 'Log out') {
       localStorage.removeItem('jwt');
+      props.onClick(false)
       navigate('/login');
     }
   }

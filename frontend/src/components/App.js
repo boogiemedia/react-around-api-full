@@ -29,16 +29,16 @@ function App() {
   const [isInfoToolTipOpen, setInfoToolTipOPen] = useState(false);
   const [infoToolTipIcon, setInfoToolTipIcon] = useState("");
   const [infoToolTipText, setInfoToolTipText] = useState("");
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(!!localStorage.getItem('jwt'));
   const [user, setUser] = useState("");
   const navigate = useNavigate();
 
   //.........end of states.......................................................................
 
   function jwtCheck() {
-    checkToken(localStorage.jwt)
+    checkToken(localStorage.getItem('jwt'))
       .then((res) => {
-        if (localStorage.jwt) {
+        if (localStorage.getItem('jwt')) {
           if (res.email) {
             setLoggedIn(true);
             setUser(res.email);
@@ -83,7 +83,10 @@ function App() {
 
   useEffect(() => {
     jwtCheck();
-    getApiData();
+    if (isLoggedIn){
+      getApiData();
+    }
+  
   }, [isLoggedIn]);
 
   //.................end of userinfo call......................................................
@@ -111,10 +114,9 @@ function App() {
   function login(email, password) {
     authorize(email, password)
       .then((data) => {
-        localStorage.setItem("jwt", data.token);
         if (data.token) {
+          localStorage.setItem("jwt", data.token);
           setLoggedIn(true);
-          getApiData();
         }
       })
       .catch((res) => {
@@ -214,7 +216,7 @@ function App() {
           />
           <Route
             path="signup"
-            element={<Header goTo="log in" link="/login" />}
+            element={<Header goTo="log in" link="/login" onclick={setLoggedIn}/>}
           />
           <Route
             path="/"
