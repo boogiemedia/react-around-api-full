@@ -56,12 +56,15 @@ function App() {
   //................end of token check..........................
 
   function getApiData() {
-    if (localStorage.jwt) {
-      const token = localStorage.jwt;
+    const jwt = localStorage.getItem('jwt')
+    console.log("sdfsdfsdf",jwt)
+    if (isLoggedIn) {
+      const token = localStorage.getItem('jwt');
       const decoded = jwt_decode(token);
       api
         .getUserInfo(decoded._id)
         .then((profile) => {
+          console.log(profile)
           setCurentUser(profile.data);
         })
         .catch((profile) =>
